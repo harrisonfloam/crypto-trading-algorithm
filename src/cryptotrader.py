@@ -287,6 +287,6 @@ class CryptoTrader:
             self.log_order(trade_decision, order, predicted_price, confidence, current_price, balance)  # Log order
             self.print_status()  # Print the current status
 
-            current_time += pd.Timedelta(seconds=self.trade_interval)
+            current_time += pd.Timedelta(self.trade_interval, 's')
             if current_time >= end_time:
                 break
