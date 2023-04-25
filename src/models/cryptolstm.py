@@ -39,7 +39,7 @@ class CryptoLSTM(nn.Module):
         self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, batch_first=True)      # LSTM layer
         self.fc1 = nn.Linear(hidden_size, hidden_size//2)                   # Fully-connected layer 1
         self.fc2 = nn.Linear(hidden_size//2 + input_size, output_size)      # Fully-connected layer 2
-        self.sigmoid = nn.Sigmoid()                                         # Sigmoid activation function
+        self.sigmoid = nn.Sigmoid()                                         # Sigmoid activation function #TODO: Try ReLU?
 
         # Define other parameters
         self.verbose = verbose  # Verbose debug flag
