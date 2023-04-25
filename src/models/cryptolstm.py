@@ -27,18 +27,19 @@ class CryptoLSTM(nn.Module):
     """
     #TODO: Is this model set up correctly?
     def __init__(self, input_size, hidden_size, output_size=1, verbose=False):
-        super(CryptoLSTM, self).__init__()
-        # Define the layers
-        self.hidden_size = hidden_size
-        self.hidden = (torch.zeros(1, 1, self.hidden_size), torch.zeros(1, 1, self.hidden_size))  # Hidden layer
-        self.lstm = nn.LSTM(input_size, hidden_size, batch_first=True)      # LSTM layer
-        self.fc1 = nn.Linear(hidden_size, hidden_size//2)                   # Fully-connected layer 1
-        self.fc2 = nn.Linear(hidden_size//2 + input_size, output_size)      # Fully-connected layer 2
-        self.sigmoid = nn.Sigmoid()                                         # Sigmoid activation function
+        super(CryptoLSTM, self).__init__()  # Inherit PyTorch NN Class
 
         # Define model parameters
         self.criterion = nn.MSELoss()                                # MSE loss function
         self.optimizer = optim.Adam(self.parameters(), lr=0.001)     # Adam optimizer
+        self.hidden_size = hidden_size
+
+        # Define the layers
+        self.hidden = (torch.zeros(1, 1, self.hidden_size), torch.zeros(1, 1, self.hidden_size))  # Hidden layer    #FIXME: size is wrong?
+        self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, batch_first=True)      # LSTM layer
+        self.fc1 = nn.Linear(hidden_size, hidden_size//2)                   # Fully-connected layer 1
+        self.fc2 = nn.Linear(hidden_size//2 + input_size, output_size)      # Fully-connected layer 2
+        self.sigmoid = nn.Sigmoid()                                         # Sigmoid activation function
 
         # Define other parameters
         self.verbose = verbose  # Verbose debug flag
@@ -94,7 +95,8 @@ class CryptoLSTM(nn.Module):
         dataset = CryptoDataset(sequences, labels)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
-        # Train the model``
+        # self.model.train()
+        # Train the model
         for epoch in range(epochs):
             running_loss = 0.0
             for i, data_load in enumerate(dataloader):
