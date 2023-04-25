@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 
 class CryptoLSTM(nn.Module):
     """
-    A class for creating an LSTM-based cryptocurrency trading algorithm.
+    A class for creating an LSTM neural network model.
 
     ### Methods:
     -----------
@@ -47,7 +47,9 @@ class CryptoLSTM(nn.Module):
     # Define the forward function
     #FIXME: Hidden layer is the wrong size? Does training/predicting need different hidden sizes?
     #TODO: this needs to be able to take a single datapoint
+    #FIXME: forward should only take x, not hidden
     def forward(self, x, hidden):
+        #TODO: Initialize hidden state with all zeros? Cell state?
         out, self.hidden = self.lstm(x, hidden)             # Pass input and previous hidden state through LSTM layer
         out = self.fc1(out[:, -1, :])                       # Pass output of LSTM layer through first fully connected layer
         out = self.sigmoid(out)                             # Apply sigmoid activation function
