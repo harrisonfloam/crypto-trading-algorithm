@@ -25,7 +25,7 @@ class SimpleCryptoLSTM(nn.Module):
         Predicts the next price in a given sequence using the trained LSTM model.
 
     """
-    #TODO: Is this model set up correctly?
+
     def __init__(self, input_size, hidden_size, output_size=1, lstm_layers=1, dropout=0.6, verbose=False):
         super().__init__()  # Inherit PyTorch NN Class
 
@@ -38,18 +38,13 @@ class SimpleCryptoLSTM(nn.Module):
         # Define the layers
         self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, batch_first=True, num_layers=lstm_layers, dropout=dropout)      # LSTM layer
         self.fc1 = nn.Linear(hidden_size + input_size, output_size)                   # Fully-connected layer 1
-        self.activation = nn.Sigmoid()                                         # Sigmoid activation function #TODO: Try ReLU?
+        self.activation = nn.Sigmoid()
 
         # Define other parameters
         self.verbose = verbose  # Verbose debug flag
 
     # Define the forward function
-    #FIXME: Hidden layer is the wrong size? Does training/predicting need different hidden sizes?
-    #TODO: this needs to be able to take a single datapoint
-    #FIXME: forward should only take x, not hidden
     def forward(self, x):
-        #TODO: Initialize hidden state with all zeros? Cell state?
-
         batch_size = x.shape[0]
         
         h0 = torch.zeros(self.lstm_layers, batch_size, self.hidden_size).requires_grad_()
@@ -60,15 +55,12 @@ class SimpleCryptoLSTM(nn.Module):
         out = self.activation(out)
         
         return out
-    
-    #TODO: Do I need a backward() or is it part of the model
 
     # Create tensor sequences for model input
     def create_sequences(self, data, seq_length):
         """
         Create sequences for training/evaluation
         """
-        #TODO: What even is seq_length?
         sequences = []
         targets = []
 
@@ -95,8 +87,6 @@ class SimpleCryptoLSTM(nn.Module):
     def train(self, data, seq_length, batch_size=32, epochs=10):
         sequences, labels = self.create_sequences(data=data, seq_length=seq_length)  # Convert training data to sequences and labels
 
-        #TODO: Make sure targets are actually shifting to the next day
-        #TODO: Get all variables on the same page - labels, targets, etc.
         # Create DataLoader
         dataset = CryptoDataset(sequences, labels)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
@@ -120,14 +110,13 @@ class SimpleCryptoLSTM(nn.Module):
         self.eval()     # Toggle evaluation mode
         with torch.no_grad():
             input_seq = data.iloc[-1:, :].values                        # Last row of dataframe (most recent features)
-            input_seq = torch.tensor(input_seq).unsqueeze(1).float()    #TODO: do we want to predict with a sequence > 1?
+            input_seq = torch.tensor(input_seq).unsqueeze(1).float()
             output, _ = self(input_seq, hidden)
             predicted_price = output.item()
             confidence = 1.0 - self.criterion(output, input_seq[:, -1:, :]).item()
         return predicted_price, confidence
     
     # Update the model with new data ("online training")
-    #TODO: this needs to be able to take a single datapoint
     def update_model(self, data, seq_length=1):
         input_seq, target_seq = self.create_sequences(data=data, seq_length=seq_length)
         self.optimizer.zero_grad()  # Clear the gradients from the optimizer
@@ -143,7 +132,6 @@ class CryptoDataset(Dataset):
     """
     A class for creating a PyTorch dataset from sequences and labels.
     """
-    #TODO: Is this needed?
     def __init__(self, sequences, labels):
         self.sequences = sequences
         self.labels = labels
