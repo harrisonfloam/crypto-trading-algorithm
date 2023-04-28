@@ -26,20 +26,19 @@ class SimpleCryptoLSTM(nn.Module):
 
     """
     #TODO: Is this model set up correctly?
-    def __init__(self, input_size, hidden_size, output_size=1, verbose=False):
+    def __init__(self, input_size, hidden_size, output_size=1, lstm_layers=1, dropout=0.6, verbose=False):
         super().__init__()  # Inherit PyTorch NN Class
 
         # Define model parameters
         self.criterion = nn.MSELoss()                                # MSE loss function
         self.optimizer = optim.Adam(self.parameters(), lr=0.001)     # Adam optimizer
         self.hidden_size = hidden_size
+        self.lstm_layers = lstm_layers  # Number of LSTM layers
 
         # Define the layers
-        self.hidden = (torch.zeros(1, 1, self.hidden_size), torch.zeros(1, 1, self.hidden_size))  # Hidden layer    #FIXME: size is wrong?
-        self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, batch_first=True)      # LSTM layer
-        self.fc1 = nn.Linear(hidden_size, hidden_size//2)                   # Fully-connected layer 1
-        self.fc2 = nn.Linear(hidden_size//2 + input_size, output_size)      # Fully-connected layer 2
-        self.sigmoid = nn.Sigmoid()                                         # Sigmoid activation function #TODO: Try ReLU?
+        self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, batch_first=True, num_layers=lstm_layers, dropout=dropout)      # LSTM layer
+        self.fc1 = nn.Linear(hidden_size + input_size, output_size)                   # Fully-connected layer 1
+        self.activation = nn.Sigmoid()                                         # Sigmoid activation function #TODO: Try ReLU?
 
         # Define other parameters
         self.verbose = verbose  # Verbose debug flag
@@ -48,14 +47,19 @@ class SimpleCryptoLSTM(nn.Module):
     #FIXME: Hidden layer is the wrong size? Does training/predicting need different hidden sizes?
     #TODO: this needs to be able to take a single datapoint
     #FIXME: forward should only take x, not hidden
-    def forward(self, x, hidden):
+    def forward(self, x):
         #TODO: Initialize hidden state with all zeros? Cell state?
-        out, self.hidden = self.lstm(x, hidden)             # Pass input and previous hidden state through LSTM layer
-        out = self.fc1(out[:, -1, :])                       # Pass output of LSTM layer through first fully connected layer
-        out = self.sigmoid(out)                             # Apply sigmoid activation function
-        out = self.fc2(out)                                 # Pass output of first fully connected layer through second fully connected layer
-        out = self.sigmoid(out)                             # Apply sigmoid activation function
-        return out, hidden
+
+        batch_size = x.shape[0]
+        
+        h0 = torch.zeros(self.lstm_layers, batch_size, self.hidden_size).requires_grad_()
+        c0 = torch.zeros(self.lstm_layers, batch_size, self.hidden_size).requires_grad_()
+
+        _, (hn, _) = self.lstm(x, (h0, c0))     # Pass through LSTM layer
+        out = self.fc1(hn[0]).flatten()
+        out = self.activation(out)
+        
+        return out
     
     #TODO: Do I need a backward() or is it part of the model
 
