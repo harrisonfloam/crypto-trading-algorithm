@@ -35,7 +35,7 @@ class CryptoLSTM(nn.Module):
         self.hidden_size = hidden_size
 
         # Define the layers
-        self.hidden = (torch.zeros(1, 1, self.hidden_size), torch.zeros(1, 1, self.hidden_size))  # Hidden layer    #FIXME: size is wrong?
+        self.hidden = (torch.zeros(1, 1, self.hidden_size), torch.zeros(1, 1, self.hidden_size))  # Hidden layer    #FIXME: size is wrong? , second tensor is cell...
         self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, batch_first=True)      # LSTM layer
         self.fc1 = nn.Linear(hidden_size, hidden_size//2)                   # Fully-connected layer 1
         self.fc2 = nn.Linear(hidden_size//2 + input_size, output_size)      # Fully-connected layer 2
