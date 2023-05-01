@@ -24,5 +24,5 @@ class CryptoModel:
         self.model.predict(*args, **kwargs)
 
     def update_model(self, *args, **kwargs):
-        self.model.predict(*args, **kwargs)
+        self.model.update_model(*args, **kwargs)
         
