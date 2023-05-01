@@ -38,7 +38,7 @@ class SimpleCryptoLSTM(nn.Module):
         # Define the layers
         self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, batch_first=True, num_layers=lstm_layers, dropout=dropout)      # LSTM layer
         self.fc1 = nn.Linear(hidden_size + input_size, output_size)                   # Fully-connected layer 1
-        self.activation = nn.Sigmoid()
+        self.activation = nn.Sigmoid()  # Sigmoid Activation Function
 
         # Define other parameters
         self.verbose = verbose  # Verbose debug flag
@@ -61,25 +61,6 @@ class SimpleCryptoLSTM(nn.Module):
         """
         Create sequences for training/evaluation
         """
-        sequences = []
-        targets = []
-
-        # Iterate over the data to create sequences
-        for i in range(seq_length, len(data)):
-            sequence = data.iloc[i - seq_length:i].values
-            target = data.iloc[i, 0]
-
-            sequences.append(sequence)
-            targets.append(target)
-
-        # Convert lists to numpy arrays
-        sequences = np.array(sequences)
-        targets = np.array(targets)
-
-
-        # Convert lists to tensors
-        sequences = torch.tensor(sequences, dtype=torch.float32)
-        targets = torch.tensor(targets, dtype=torch.float32)
 
         return sequences, targets
     
@@ -91,7 +72,6 @@ class SimpleCryptoLSTM(nn.Module):
         dataset = CryptoDataset(sequences, labels)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
-        # self.model.train()
         # Train the model
         for epoch in range(epochs):
             running_loss = 0.0
