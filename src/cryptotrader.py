@@ -37,7 +37,7 @@ class CryptoTrader:
         Train the model and start the live trading loop in one call.
     """
     def __init__(self, initial_balance, trade_interval, run_time, run_time_unit='h', 
-                 model_class='CryptoLSTM', product_id='BTC', buy_threshold=0.02, sell_threshold=0.02,
+                 model_class='LSTM', product_id='BTC', buy_threshold=0.02, sell_threshold=0.02,
                  order_p=0.1, confidence_threshold=0.80, slippage_p=0.005, fees_p=0.005, indicators=True, coinbase_api=CoinbaseAPI, verbose=False):
         # Initialize trading parameters
         self.product_id = product_id                        # Crypto symbol
