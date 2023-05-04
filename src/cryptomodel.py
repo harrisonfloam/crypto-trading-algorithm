@@ -1,6 +1,10 @@
 ## Crypto Model Class
 # Harrison Floam, 18 April 2023
 
+# Import
+import torch
+from torch.utils.data import Dataset
+from torch.utils.data import DataLoader
 
 class CryptoModel:
     """A wrapper class for different cryptocurrency trading models.
@@ -26,3 +30,32 @@ class CryptoModel:
     def update_model(self, *args, **kwargs):
         self.model.update_model(*args, **kwargs)
         
+
+class CryptoDataset(Dataset):
+    """
+    A class for creating a PyTorch dataset from historical price data.
+    """
+    def __init__(self, data, seq_length):
+        self.sequences, self.labels = self.create_sequences(data, seq_length)
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, index):
+        return torch.tensor(self.sequences[index]), torch.tensor(self.labels[index])
+
+    def create_sequences(self, data, seq_length):
+        """
+        Convert historical price data to sequences and labels for training.
+        """
+        num_sequences = len(data) - seq_length
+        sequences = []
+        labels = []
+
+        for i in range(num_sequences):
+            sequence = data[i:i+seq_length]
+            label = data[i+seq_length]
+            sequences.append(sequence)
+            labels.append(label)
+
+        return sequences, labels

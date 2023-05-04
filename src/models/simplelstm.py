@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 
 class SimpleLSTM(nn.Module):
     """
-    A class for creating an LSTM neural network model.
+    A class for creating a simple LSTM neural network model.
 
     ### Methods:
     -----------
@@ -34,6 +34,7 @@ class SimpleLSTM(nn.Module):
         self.optimizer = optim.Adam(self.parameters(), lr=0.001)     # Adam optimizer
         self.hidden_size = hidden_size
         self.lstm_layers = lstm_layers  # Number of LSTM layers
+        self.dropout = dropout          # Dropout
 
         # Define the layers
         self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, batch_first=True, num_layers=lstm_layers, dropout=dropout)      # LSTM layer
@@ -47,8 +48,8 @@ class SimpleLSTM(nn.Module):
     def forward(self, x):
         batch_size = x.shape[0]
         
-        h0 = torch.zeros(self.lstm_layers, batch_size, self.hidden_size).requires_grad_()
-        c0 = torch.zeros(self.lstm_layers, batch_size, self.hidden_size).requires_grad_()
+        h0 = torch.zeros(self.lstm_layers, batch_size, self.hidden_size, requires_grad=True)
+        c0 = torch.zeros(self.lstm_layers, batch_size, self.hidden_size, requires_grad=True)
 
         _, (hn, _) = self.lstm(x, (h0, c0))     # Pass through LSTM layer
         out = self.fc1(hn[0]).flatten()
