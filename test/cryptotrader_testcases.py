@@ -17,7 +17,7 @@ def test_case_1():
         'trade_interval': 60,
         'run_time': 60,
         'run_time_unit': 'min',
-        'model_class': 'CryptoLSTM',
+        'model_class': 'SimpleLSTM',
         'product_id': 'BTC',
         'buy_threshold': 0.02,
         'sell_threshold': 0.02,

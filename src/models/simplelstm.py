@@ -9,6 +9,8 @@ import torch.optim as optim
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 
+from cryptomodel import CryptoDataset
+
 class SimpleLSTM(nn.Module):
     """
     A class for creating a simple LSTM neural network model.
@@ -31,7 +33,6 @@ class SimpleLSTM(nn.Module):
 
         # Define model parameters
         self.criterion = nn.MSELoss()                                # MSE loss function
-        self.optimizer = optim.Adam(self.parameters(), lr=0.001)     # Adam optimizer
         self.hidden_size = hidden_size
         self.lstm_layers = lstm_layers  # Number of LSTM layers
         self.dropout = dropout          # Dropout
@@ -42,6 +43,7 @@ class SimpleLSTM(nn.Module):
         self.activation = nn.Sigmoid()  # Sigmoid Activation Function
 
         # Define other parameters
+        self.optimizer = optim.Adam(self.parameters(), lr=0.001)     # Adam optimizer
         self.verbose = verbose  # Verbose debug flag
 
     # Define the forward function
@@ -52,25 +54,16 @@ class SimpleLSTM(nn.Module):
         c0 = torch.zeros(self.lstm_layers, batch_size, self.hidden_size, requires_grad=True)
 
         _, (hn, _) = self.lstm(x, (h0, c0))     # Pass through LSTM layer
-        out = self.fc1(hn[0]).flatten()
+        out = self.fc1(torch.cat([hn[-1], x[:, -1]], dim=1))    # Pass final hidden tensor from all LSTM layers through fully-connected layer
         out = self.activation(out)
         
         return out
-
-    # Create tensor sequences for model input
-    def create_sequences(self, data, seq_length):
-        """
-        Create sequences for training/evaluation
-        """
-
-        return sequences, targets
     
     # Train the model
     def train(self, data, seq_length, batch_size=32, epochs=10):
-        sequences, labels = self.create_sequences(data=data, seq_length=seq_length)  # Convert training data to sequences and labels
 
         # Create DataLoader
-        dataset = CryptoDataset(sequences, labels)
+        dataset = CryptoDataset(data=data, seq_length=seq_length)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
         # Train the model
@@ -107,18 +100,3 @@ class SimpleLSTM(nn.Module):
 
         loss.backward()  # Backpropagate loss
         self.optimizer.step()  # Update model parameters
-
-
-class CryptoDataset(Dataset):
-    """
-    A class for creating a PyTorch dataset from sequences and labels.
-    """
-    def __init__(self, sequences, labels):
-        self.sequences = sequences
-        self.labels = labels
-
-    def __len__(self):
-        return len(self.labels)
-
-    def __getitem__(self, index):
-        return self.sequences[index], self.labels[index]
