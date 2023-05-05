@@ -59,6 +59,7 @@ class CryptoTrader:
         self.hidden = None                  # Hidden layers
         self.indicators = indicators        # Indicator toggle
 
+
         # Initialize Coinbase API parameters
         if coinbase_api == CoinbaseAPI:
             self.coinbase_api = CoinbaseAPI(product_id=product_id)
@@ -89,7 +90,11 @@ class CryptoTrader:
     def initialize_model(self, data):
         input_size = data.shape[1]   # Number of input columns
 
-        self.model = CryptoModel(model_class_name=self.model_class, input_size=input_size, hidden_size=128, output_size=1, verbose=self.verbose) # Model instance
+        self.model = CryptoModel(model_class_name=self.model_class, 
+                                 input_size=input_size, 
+                                 hidden_size=128, 
+                                 output_size=1, 
+                                 verbose=self.verbose) # Model instance
 
     # Get live data
     def get_live_data(self):
