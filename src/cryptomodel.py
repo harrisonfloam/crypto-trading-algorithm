@@ -42,7 +42,7 @@ class CryptoDataset(Dataset):
         return len(self.labels)
 
     def __getitem__(self, index):
-        return torch.tensor(self.sequences[index]), torch.tensor(self.labels[index])
+        return torch.tensor(self.sequences[index]).float(), torch.tensor(self.labels[index]).float()
 
     def create_sequences(self, data, seq_length):
         """

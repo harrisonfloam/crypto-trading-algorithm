@@ -64,7 +64,7 @@ class SimpleLSTM(nn.Module):
 
         # Create DataLoader
         dataset = CryptoDataset(data=data, seq_length=seq_length)
-        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, pin_memory=True)
 
         # Train the model
         for epoch in range(epochs):
@@ -72,12 +72,12 @@ class SimpleLSTM(nn.Module):
             for i, data_load in enumerate(dataloader):
                 inputs, labels = data_load
                 self.optimizer.zero_grad()
-                outputs, _ = self(inputs)
+                outputs = self(inputs)
                 loss = self.criterion(outputs.squeeze(), labels)
                 loss.backward()
                 self.optimizer.step()
                 running_loss += loss.item()
-            if self.verbose: print(f'Epoch {epoch+1} loss: {running_loss/len(dataloader):.6f}') # Print if verbose
+            if self.verbose: print(f'Epoch {epoch+1} loss: {running_loss/len(dataloader):.6f}') # Print running loss if verbose
 
     # Query the model
     def predict(self, data, hidden):
