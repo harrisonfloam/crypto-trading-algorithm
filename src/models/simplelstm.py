@@ -72,7 +72,7 @@ class SimpleLSTM(nn.Module):
             for i, data_load in enumerate(dataloader):
                 inputs, labels = data_load
                 self.optimizer.zero_grad()
-                outputs, _ = self(inputs, self.hidden)
+                outputs, _ = self(inputs)
                 loss = self.criterion(outputs.squeeze(), labels)
                 loss.backward()
                 self.optimizer.step()

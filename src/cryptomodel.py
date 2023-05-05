@@ -53,7 +53,7 @@ class CryptoDataset(Dataset):
         labels = []
 
         for i in range(num_sequences):
-            sequence = data.iloc[i:i+seq_length, :]
+            sequence = data.iloc[i:i+seq_length, :].values
             label = data.loc[i + seq_length, 'close']
             sequences.append(sequence)
             labels.append(label)
