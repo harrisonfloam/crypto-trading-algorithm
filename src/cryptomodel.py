@@ -46,15 +46,15 @@ class CryptoDataset(Dataset):
 
     def create_sequences(self, data, seq_length):
         """
-        Convert historical price data to sequences and labels for training.
+        Convert historical price data to sequences and labels for training using overlapping windows.
         """
         num_sequences = len(data) - seq_length
         sequences = []
         labels = []
 
         for i in range(num_sequences):
-            sequence = data[i:i+seq_length]
-            label = data[i+seq_length]
+            sequence = data.iloc[i:i+seq_length, :]
+            label = data.loc[i + seq_length, 'close']
             sequences.append(sequence)
             labels.append(label)
 

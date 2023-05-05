@@ -28,7 +28,7 @@ class SimpleLSTM(nn.Module):
 
     """
 
-    def __init__(self, input_size, hidden_size, output_size=1, lstm_layers=1, dropout=0.6, verbose=False):
+    def __init__(self, input_size, hidden_size, output_size=1, lstm_layers=1, dropout=0, verbose=False):
         super().__init__()  # Inherit PyTorch NN Class
 
         # Define model parameters
