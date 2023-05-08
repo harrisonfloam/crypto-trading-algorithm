@@ -28,7 +28,7 @@ class SimpleLSTM(nn.Module):
 
     """
 
-    def __init__(self, input_size, hidden_size, output_size=1, lstm_layers=2, dropout=0.6, verbose=False):
+    def __init__(self, input_size, hidden_size, output_size=1, lstm_layers=1, dropout=0, verbose=False):
         super().__init__()  # Inherit PyTorch NN Class
 
         # Define model parameters
@@ -74,19 +74,18 @@ class SimpleLSTM(nn.Module):
                 self.optimizer.zero_grad()
                 outputs = self(inputs)
                 loss = self.criterion(outputs.squeeze(), labels)
-                print(f'Loss {loss}')
                 loss.backward()
                 self.optimizer.step()
                 running_loss += loss.item()
             if self.verbose: print(f'Epoch {epoch+1} loss: {running_loss/len(dataloader):.6f}') # Print running loss if verbose
 
     # Query the model
-    def predict(self, data, hidden):
+    def predict(self, data, seq_length):
         self.eval()     # Toggle evaluation mode
         with torch.no_grad():
-            input_seq = data.iloc[-1:, :].values                        # Last row of dataframe (most recent features)
+            input_seq = data.iloc[-seq_length:, :].values                        # Most recent sequence
             input_seq = torch.tensor(input_seq).unsqueeze(1).float()
-            output, _ = self(input_seq, hidden)
+            output = self(input_seq)
             predicted_price = output.item()
             confidence = 1.0 - self.criterion(output, input_seq[:, -1:, :]).item()
         return predicted_price, confidence

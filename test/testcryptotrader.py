@@ -46,6 +46,9 @@ class TestCryptoTrader(CryptoTrader):
 
         self.test_train_data, self.test_data = train_test_split(df, test_size=0.2, shuffle=False)
 
+    def test_predict(self, test_data, seq_length):
+        # Call predict() for each target
+
     # Train and run
     def test_train_run(self, batch_size=32, epochs=10, seq_length=10):
         self.test_train(filepath=self.filepath, 
