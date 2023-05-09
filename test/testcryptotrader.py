@@ -54,7 +54,7 @@ class TestCryptoTrader(CryptoTrader):
         confidences = pd.DataFrame(columns=["confidence"])
 
         for i in range(num_sequences):
-            sequence = self.test_data.iloc[i:i+seq_length, :].values
+            sequence = self.test_data.iloc[i:i+seq_length, :]
             predicted_price, confidence = self.model.predict(sequence)
             predicted_prices.loc[self.test_data.index[i+seq_length-1]] = predicted_price
             confidences.loc[self.test_data.index[i+seq_length-1]] = confidence
