@@ -60,7 +60,7 @@ class SimpleLSTM(nn.Module):
         return out
     
     # Train the model
-    def train(self, data, seq_length, batch_size=32, epochs=10):
+    def train_model(self, data, seq_length, batch_size=32, epochs=10):
 
         # Create DataLoader
         dataset = CryptoDataset(data=data, seq_length=seq_length)

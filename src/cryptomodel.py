@@ -22,7 +22,7 @@ class CryptoModel:
         self.model = model_class(**kwargs)
 
     def train(self, *args, **kwargs):
-        self.model.train(*args, **kwargs)
+        self.model.train_model(*args, **kwargs)
 
     def predict(self, *args, **kwargs):
         self.model.predict(*args, **kwargs)

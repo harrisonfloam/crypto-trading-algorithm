@@ -33,9 +33,9 @@ def test_case_1():
     
     trader = TestCryptoTrader(**params)
     
-    trader.test_train(batch_size=32, epochs=10, seq_length=10)
+    trader.test_train(batch_size=32, epochs=1, seq_length=10)
 
-    trader.predict()
+    predicted_prices, confidences = trader.test_predict(seq_length=10)
 
 if __name__ == '__main__':
     test_case_1()
