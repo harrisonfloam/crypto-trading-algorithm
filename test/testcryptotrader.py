@@ -62,7 +62,7 @@ class TestCryptoTrader(CryptoTrader):
 
 
     # Train and run
-    def test_train_run(self, batch_size=32, epochs=10, seq_length=10):
+    def test_train_run(self, seq_length, batch_size=32, epochs=10):
         self.test_train(filepath=self.filepath, 
                         batch_size=batch_size, 
                         epochs=epochs, 
