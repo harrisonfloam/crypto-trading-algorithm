@@ -80,10 +80,11 @@ class SimpleLSTM(nn.Module):
             if self.verbose: print(f'Epoch {epoch+1} loss: {running_loss/len(dataloader):.6f}') # Print running loss if verbose
 
     # Query the model
-    def predict(self, data, seq_length):
+    # TODO: No need to pass seq length, just useonly the data passed in
+    def predict(self, data):
         self.eval()     # Toggle evaluation mode
         with torch.no_grad():
-            input_seq = data.iloc[-seq_length:, :].values                        # Most recent sequence
+            input_seq = data.values
             input_seq = torch.tensor(input_seq).unsqueeze(1).float()
             output = self(input_seq)
             predicted_price = output.item()

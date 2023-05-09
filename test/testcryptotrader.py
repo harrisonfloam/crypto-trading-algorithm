@@ -48,6 +48,18 @@ class TestCryptoTrader(CryptoTrader):
 
     def test_predict(self, test_data, seq_length):
         # Call predict() for each target
+        num_sequences = len(test_data) - seq_length
+        predicted_prices = pd.DataFrame(columns=["predicted_price"])
+        confidences = pd.DataFrame(columns=["confidence"])
+
+        for i in range(num_sequences):
+            sequence = test_data.iloc[i:i+seq_length, :].values
+            predicted_price, confidence = self.model.predict(sequence)
+            predicted_prices.loc[test_data.index[i+seq_length-1]] = predicted_price
+            confidences.loc[test_data.index[i+seq_length-1]] = confidence
+
+        return predicted_prices, confidences
+
 
     # Train and run
     def test_train_run(self, batch_size=32, epochs=10, seq_length=10):
